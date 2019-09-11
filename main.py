@@ -1,39 +1,46 @@
+from requests import get
 import smtplib
 import subprocess
+import imaplib
+import time
 
-def send_mail(ip_str):
+def intitialize_server(user,password,obj):
+	obj.starttls()
+	obj.login(user,password)
 
-	fromaddr = "" #!!!!!!!!
+class IP_mailBot:
 
-	password = "" #!!!!!!!!
+	def __init__(self, user, password, recipient):
 
-	toaddrs = "" #!!!!!!!!!
+		self.user = user
+		self.password = password
+		self.recipient = recipient
 
-	server = smtplib.SMTP("smtp.gmail.com:587")
+		self.server = smtplib.SMTP("smtp.gmail.com:587")
 
-	server.starttls()
+		self.current_ip = None
 
-	server.login(fromaddr, password)
+		intitialize_server(self.user,self.password,self.server)
 
-	server.sendmail(fromaddr, toaddrs, f"Your IPv4 is {ip_str}.")
+	def send_mail(self):
 
-def run_cmd(cmd):
+		self.server.sendmail(self.user, self.user, f"Hello God-san. Your external IP is {self.current_ip}.")
+	
+	def check_ip(self):
 
-	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+		ip = get('https://api.ipify.org').text
 
-	output, error = process.communicate()
+		if ip is not self.current_ip:
+			self.current_ip = ip
 
-	if error is not None:
+			self.send_mail()
 
-		return error
+usr = "------@gmail.com" #!!!!!!!!!!
+password = "---------" #!!!!!!!!!!
 
-	else:
+bot = IP_mailBot(usr, password, usr)
 
-		return output
+while True:
 
-
-ip = run_cmd("curl ifconfig.me")
-
-ip = str(ip).strip("b")
-
-#send_mail(ip)
+	time.sleep(60 * 5)
+	bot.check_ip()
