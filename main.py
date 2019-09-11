@@ -18,29 +18,35 @@ class IP_mailBot:
 
 		self.server = smtplib.SMTP("smtp.gmail.com:587")
 
-		self.current_ip = None
+		file1 = open("ip.txt","r")
+		self.current_ip = file1.read()
+
+		print(self.current_ip)
 
 		intitialize_server(self.user,self.password,self.server)
 
 	def send_mail(self):
 
-		self.server.sendmail(self.user, self.user, f"Hello God-san. Your external IP is {self.current_ip}.")
+		self.server.sendmail(self.user, self.user, f"Hello your external IP is {self.current_ip}.")
 	
 	def check_ip(self):
 
 		ip = get('https://api.ipify.org').text
 
-		if ip is not self.current_ip:
+		if self.current_ip.find(ip) is -1:
 			self.current_ip = ip
+
+			file1 = open("ip.txt","w")
+			file1.write(ip)
 
 			self.send_mail()
 
-usr = "------@gmail.com" #!!!!!!!!!!
-password = "---------" #!!!!!!!!!!
+usr = "---------"
+password = "----------"
 
 bot = IP_mailBot(usr, password, usr)
 
 while True:
 
-	time.sleep(60 * 5)
 	bot.check_ip()
+	time.sleep(60 * 1)
