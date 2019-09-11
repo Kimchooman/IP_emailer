@@ -1,9 +1,11 @@
 # IP_emailer
 
 #Dependencies:
-  -smtplib
-  -subprocess
-  
-#Applications:
-  -SSH into remote pc, and email it's ip.
-  -Manually email ip to recipient.
+#-smtplib
+#-requests
+#-time
+#-imaplib
+ 
+#For best usage add to OS list of On Startup programs
+
+#-Will run in the background, and update (potentially email ip) every 5 minutes.
